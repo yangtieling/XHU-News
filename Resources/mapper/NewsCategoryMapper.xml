@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xhu.dao.NewsCategoryMapper" >
+  <resultMap id="BaseResultMap" type="com.xhu.pojo.NewsCategory" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="createDate" property="createdate" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, name, createDate
+  </sql>
+
+  <select id="selectCategoryList" resultType="com.xhu.pojo.NewsCategory">
+    select
+    <include refid="Base_Column_List" />
+    from news_category
+  </select>
+
+  <!-- 根据主题ID查询主题对象 begin-->
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from news_category
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <!-- 根据主题ID查询主题对象 end-->
+
+  <!-- 根据主键删除主题 begin-->
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from news_category
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <!-- 根据主键删除主题 end-->
+
+  <select id="countTotalCategories" resultType="java.lang.Integer">
+    SELECT COUNT(*) AS totalCategories FROM news_category
+  </select>
+
+  <insert id="insert" parameterType="com.xhu.pojo.NewsCategory" >
+    insert into news_category (id, name, createDate
+      )
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{createdate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+
+  <!-- 新增新闻主题 start-->
+  <insert id="insertSelective" parameterType="com.xhu.pojo.NewsCategory" >
+    insert into news_category
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >            <!--MyBatis动态SQL语句，避免程序由于SQL传入值为空报错-->
+        id,                              <!--确保数据查询准确（对查询来讲）-->
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="createdate != null" >
+        createDate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="createdate != null" >
+        #{createdate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <!-- 新增新闻主题 end-->
+
+  <!-- 修改新闻主题 begin-->
+  <update id="updateByPrimaryKeySelective" parameterType="com.xhu.pojo.NewsCategory" >
+    update news_category
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="createdate != null" >
+        createDate = #{createdate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <!-- 修改新闻主题 end-->
+
+  <update id="updateByPrimaryKey" parameterType="com.xhu.pojo.NewsCategory" >
+    update news_category
+    set name = #{name,jdbcType=VARCHAR},
+      createDate = #{createdate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

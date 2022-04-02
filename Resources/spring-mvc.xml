@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
+    <context:component-scan base-package="com.xhu.controller"></context:component-scan>
+    <mvc:annotation-driven/>
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+    <mvc:resources mapping="/build/css/**" location="/build/css/"/>
+    <mvc:resources mapping="/build/js/**" location="/build/js/"/>
+    <mvc:resources mapping="/pages/css/**" location="/pages/css/"/>
+    <mvc:resources mapping="/pages/js/**" location="/pages/js/"/>
+    <mvc:resources mapping="/pages/jsloc/**" location="/pages/jsloc/"/>
+    <mvc:resources mapping="/pages/images/**" location="/pages/images/"/>
+    <mvc:resources mapping="/vendors/**" location="/vendors/"/>
+    <mvc:resources mapping="/plugins/ckeditor/**" location="/plugins/ckeditor/"/>
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/user/toLogin"/>
+            <mvc:exclude-mapping path="/user/login"/>
+            <mvc:exclude-mapping path="/user/logout"/>
+            <mvc:exclude-mapping path="/pages/page_403.jsp"/>
+            <bean class="com.xhu.util.SysInteceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+</beans>

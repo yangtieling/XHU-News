@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xhu.dao.NewsCommentMapper">
+    <resultMap id="BaseResultMap" type="com.xhu.pojo.NewsComment">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="newsId" property="newsid" jdbcType="BIGINT"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="author" property="author" jdbcType="VARCHAR"/>
+        <result column="ip" property="ip" jdbcType="VARCHAR"/>
+        <result column="createDate" property="createdate" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id, newsId, content, author, ip, createDate
+    </sql>
+
+    <select id="selectNewsCommentList" resultType="com.xhu.pojo.NewsComment">
+        select
+        <include refid="Base_Column_List"/>
+        from news_comment
+    </select>
+
+    <select id="countTotalComments" resultType="java.lang.Integer">
+        SELECT COUNT(*) AS totalComments FROM news_comment
+    </select>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from news_comment
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <!--  根据一条新闻查询下面所有评论 begin-->
+    <select id="selectCommentListByNewsId" parameterType="java.lang.Long" resultType="com.xhu.pojo.NewsComment">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM news_comment WHERE newsId=#{id}
+    </select>
+    <!--  根据一条新闻查询下面所有评论 end-->
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from news_comment
+    where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="insert" parameterType="com.xhu.pojo.NewsComment">
+    insert into news_comment (id, newsId, content, 
+      author, ip, createDate
+      )
+    values (#{id,jdbcType=BIGINT}, #{newsid,jdbcType=BIGINT}, #{content,jdbcType=VARCHAR}, 
+      #{author,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, #{createdate,jdbcType=TIMESTAMP}
+      )
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.xhu.pojo.NewsComment">
+        insert into news_comment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="newsid != null">
+                newsId,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+            <if test="author != null">
+                author,
+            </if>
+            <if test="ip != null">
+                ip,
+            </if>
+            <if test="createdate != null">
+                createDate,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="newsid != null">
+                #{newsid,jdbcType=BIGINT},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="author != null">
+                #{author,jdbcType=VARCHAR},
+            </if>
+            <if test="ip != null">
+                #{ip,jdbcType=VARCHAR},
+            </if>
+            <if test="createdate != null">
+                #{createdate,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.xhu.pojo.NewsComment">
+        update news_comment
+        <set>
+            <if test="newsid != null">
+                newsId = #{newsid,jdbcType=BIGINT},
+            </if>
+            <if test="content != null">
+                content = #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="author != null">
+                author = #{author,jdbcType=VARCHAR},
+            </if>
+            <if test="ip != null">
+                ip = #{ip,jdbcType=VARCHAR},
+            </if>
+            <if test="createdate != null">
+                createDate = #{createdate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.xhu.pojo.NewsComment">
+    update news_comment
+    set newsId = #{newsid,jdbcType=BIGINT},
+      content = #{content,jdbcType=VARCHAR},
+      author = #{author,jdbcType=VARCHAR},
+      ip = #{ip,jdbcType=VARCHAR},
+      createDate = #{createdate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+    </update>
+
+</mapper>

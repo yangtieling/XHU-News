@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xhu.dao.NewsDetailMapper">
+    <resultMap id="BaseResultMap" type="com.xhu.pojo.NewsDetail">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="categoryId" property="categoryid" jdbcType="BIGINT"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="summary" property="summary" jdbcType="VARCHAR"/>
+        <result column="picPath" property="picpath" jdbcType="VARCHAR"/>
+        <result column="author" property="author" jdbcType="VARCHAR"/>
+        <result column="createDate" property="createdate" jdbcType="TIMESTAMP"/>
+        <result column="modifyDate" property="modifydate" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <resultMap id="ResultMapWithBLOBs" type="com.xhu.pojo.NewsDetail" extends="BaseResultMap">
+        <result column="content" property="content" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+
+    <resultMap id="NewsCategoryNameList" type="com.xhu.pojo.NewsDetail">
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="summary" property="summary" jdbcType="VARCHAR"/>
+        <result column="name" property="categoryname" jdbcType="VARCHAR"/>
+        <result column="author" property="author" jdbcType="VARCHAR"/>
+        <result column="createDate" property="createdate" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <select id="selectNewsCategoryNameList" resultMap="NewsCategoryNameList">
+        SELECT n.title,n.summary,c.name,n.author,n.createDate,n.id
+        FROM news_detail AS n
+        INNER JOIN news_category AS c
+        on n.categoryId = c.id
+    </select>
+
+    <select id="countTotalDetails" resultType="java.lang.Integer">
+        SELECT COUNT(*) AS totalDetails FROM news_detail
+    </select>
+
+    <select id="selectGraphBarData" resultType="com.xhu.pojo.GraphBar">
+        SELECT ( SELECT `name` FROM news_category WHERE id = categoryId ) AS categoryname,COUNT(*) AS newsCount
+        FROM
+        news_detail
+        GROUP BY
+        categoryId
+    </select>
+
+    <sql id="Base_Column_List">
+    id, categoryId, title, summary, picPath, author, createDate, modifyDate
+    </sql>
+
+    <sql id="Blob_Column_List">
+    content
+    </sql>
+
+    <select id="selectNewsList" resultType="com.xhu.pojo.NewsDetail">
+        select
+        <include refid="Base_Column_List"/>
+        from news_detail
+    </select>
+
+    <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from news_detail
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from news_detail
+    where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="insert" parameterType="com.xhu.pojo.NewsDetail">
+    insert into news_detail (id, categoryId, title, 
+      summary, picPath, author, 
+      createDate, modifyDate, content
+      )
+    values (#{id,jdbcType=BIGINT}, #{categoryid,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
+      #{summary,jdbcType=VARCHAR}, #{picpath,jdbcType=VARCHAR}, #{author,jdbcType=VARCHAR}, 
+      #{createdate,jdbcType=TIMESTAMP}, #{modifydate,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR}
+      )
+    </insert>
+
+    <!--新增新闻详情 begin-->
+    <insert id="insertSelective" parameterType="com.xhu.pojo.NewsDetail">
+        insert into news_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="categoryid != null">
+                categoryId,
+            </if>
+            <if test="title != null">
+                title,
+            </if>
+            <if test="summary != null">
+                summary,
+            </if>
+            <if test="picpath != null">
+                picPath,
+            </if>
+            <if test="author != null">
+                author,
+            </if>
+            <if test="createdate != null">
+                createDate,
+            </if>
+            <if test="modifydate != null">
+                modifyDate,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="categoryid != null">
+                #{categoryid,jdbcType=BIGINT},
+            </if>
+            <if test="title != null">
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="summary != null">
+                #{summary,jdbcType=VARCHAR},
+            </if>
+            <if test="picpath != null">
+                #{picpath,jdbcType=VARCHAR},
+            </if>
+            <if test="author != null">
+                #{author,jdbcType=VARCHAR},
+            </if>
+            <if test="createdate != null">
+                #{createdate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifydate != null">
+                #{modifydate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <!--新增新闻详情 end-->
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.xhu.pojo.NewsDetail">
+        update news_detail
+        <set>
+            <if test="categoryid != null">
+                categoryId = #{categoryid,jdbcType=BIGINT},
+            </if>
+            <if test="title != null">
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="summary != null">
+                summary = #{summary,jdbcType=VARCHAR},
+            </if>
+            <if test="picpath != null">
+                picPath = #{picpath,jdbcType=VARCHAR},
+            </if>
+            <if test="author != null">
+                author = #{author,jdbcType=VARCHAR},
+            </if>
+            <if test="createdate != null">
+                createDate = #{createdate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifydate != null">
+                modifyDate = #{modifydate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="content != null">
+                content = #{content,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.xhu.pojo.NewsDetail">
+    update news_detail
+    set categoryId = #{categoryid,jdbcType=BIGINT},
+      title = #{title,jdbcType=VARCHAR},
+      summary = #{summary,jdbcType=VARCHAR},
+      picPath = #{picpath,jdbcType=VARCHAR},
+      author = #{author,jdbcType=VARCHAR},
+      createDate = #{createdate,jdbcType=TIMESTAMP},
+      modifyDate = #{modifydate,jdbcType=TIMESTAMP},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.xhu.pojo.NewsDetail">
+    update news_detail
+    set categoryId = #{categoryid,jdbcType=BIGINT},
+      title = #{title,jdbcType=VARCHAR},
+      summary = #{summary,jdbcType=VARCHAR},
+      picPath = #{picpath,jdbcType=VARCHAR},
+      author = #{author,jdbcType=VARCHAR},
+      createDate = #{createdate,jdbcType=TIMESTAMP},
+      modifyDate = #{modifydate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

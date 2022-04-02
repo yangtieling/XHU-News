@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xhu.dao.NewsUserMapper">
+    <resultMap id="BaseResultMap" type="com.xhu.pojo.NewsUser">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="userName" property="username" jdbcType="VARCHAR"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="userType" property="usertype" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id, userName, password, email, userType
+    </sql>
+
+    <select id="selectUserList" resultType="com.xhu.pojo.NewsUser">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM news_user
+    </select>
+
+    <select id="selectUserByParam" resultType="com.xhu.pojo.NewsUser">
+    SELECT * FROM news_user WHERE userName=#{userName} and password=#{password}
+    </select>
+
+    <!--根据用户ID查找用户对象 begin-->
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from news_user
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <!--根据用户ID查找用户对象 end-->
+    <select id="countTotalUsers" resultType="java.lang.Integer">
+        SELECT COUNT(*) AS totalUsers FROM news_user
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from news_user
+    where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="insert" parameterType="com.xhu.pojo.NewsUser">
+    insert into news_user (id, userName, password, 
+      email, userType)
+    values (#{id,jdbcType=BIGINT}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{email,jdbcType=VARCHAR}, #{usertype,jdbcType=INTEGER})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.xhu.pojo.NewsUser">
+        insert into news_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="username != null">
+                userName,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="usertype != null">
+                userType,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="username != null">
+                #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="usertype != null">
+                #{usertype,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.xhu.pojo.NewsUser">
+        update news_user
+        <set>
+            <if test="username != null">
+                userName = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="usertype != null">
+                userType = #{usertype,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.xhu.pojo.NewsUser">
+    update news_user
+    set userName = #{username,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      userType = #{usertype,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
